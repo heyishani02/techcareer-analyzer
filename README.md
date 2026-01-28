@@ -20,8 +20,8 @@ Coming Soon
 
 ## How to Run Locally
 ```bash
-pip install streamlit plotly pandas
-streamlit run career_ai_simulator_v2.py
+pip install -r requirements.txt
+streamlit run app.py
 ```
 
 ## Author
