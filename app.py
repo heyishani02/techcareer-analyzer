@@ -53,11 +53,31 @@ if st.button("Get Career Recommendations", key="get_recommend_1"):
             "database": "sql",
             "databases": "sql",
             "rdbms": "sql",
+            "mysql": "sql",
+            "postgresql": "sql",
+            "mongodb": "databases",
+            "nosql": "databases",
             
             # Programming language variations
             "py": "python",
             "cpp": "c++",
             "c plus plus": "c++",
+            "javascript": "js",
+            "typescript": "js",
+            "golang": "go",
+            "go lang": "go",
+            "reactjs": "react",
+            "react.js": "react",
+            "angular": "frontend",
+            "vue": "frontend",
+            "vuejs": "frontend",
+            "node": "backend",
+            "nodejs": "backend",
+            "node.js": "backend",
+            "django": "backend",
+            "flask": "backend",
+            "spring": "java",
+            "springboot": "java",
             
             # Cloud platforms
             "amazon web services": "aws",
@@ -68,6 +88,12 @@ if st.button("Get Career Recommendations", key="get_recommend_1"):
             # DevOps tools
             "k8s": "kubernetes",
             "kube": "kubernetes",
+            "docker": "containers",
+            "containerization": "containers",
+            "ci/cd": "devops",
+            "cicd": "devops",
+            "jenkins": "devops",
+            "gitlab ci": "devops",
             
             # Data visualization
             "data viz": "data visualization",
@@ -112,7 +138,13 @@ if st.button("Get Career Recommendations", key="get_recommend_1"):
             "apache spark": "spark",
             "pyspark": "spark",
             "apache hadoop": "hadoop",
-            "apache airflow": "airflow"
+            "apache airflow": "airflow",
+            
+            # APIs and Web
+            "rest api": "apis",
+            "restful": "apis",
+            "api": "apis",
+            "graphql": "apis"
         }
         
         # Clean and validate skills input with mapping
@@ -131,8 +163,24 @@ if st.button("Get Career Recommendations", key="get_recommend_1"):
         if not skills_list:
             st.warning("Please enter valid skills!")
         else:
-            # Skill mapping applied silently in the background
-            # No display to user - keeps UI clean
+            # Track which original skills didn't map to anything recognized
+            unrecognized_skills = []
+            for raw_skill in raw_skills:
+                mapped = skill_mapping.get(raw_skill, raw_skill)
+                # Check if this mapped skill exists in ANY career path
+                skill_recognized = False
+                for career_data in career_db.values():
+                    if mapped in career_data["skills"]:
+                        skill_recognized = True
+                        break
+                if not skill_recognized and raw_skill not in unrecognized_skills:
+                    unrecognized_skills.append(raw_skill)
+            
+            # Show info about unrecognized skills
+            if unrecognized_skills and len(skills_list) > len(unrecognized_skills):
+                st.info(f"ℹ️ **Note:** Some skills ({', '.join([s.title() for s in unrecognized_skills])}) aren't in our current database, but we've matched your other skills!")
+            elif len(unrecognized_skills) == len(skills_list):
+                st.warning(f"⚠️ **Heads up:** The skills you entered ({', '.join([s.title() for s in unrecognized_skills])}) aren't in our current tech career database. Try skills like: Python, Java, SQL, AWS, Docker, React, Machine Learning, Data Analysis, etc.")
             
             # -----------------------
             # Expanded Career Database + Skill Weights
@@ -155,16 +203,16 @@ if st.button("Get Career Recommendations", key="get_recommend_1"):
                     "weight": [0.2, 0.2, 0.2, 0.15, 0.15, 0.1]
                 },
                 "Software Developer": {
-                    "skills": ["python", "java", "c++", "git", "oop", "algorithms"],
-                    "weight": [0.25, 0.2, 0.15, 0.1, 0.15, 0.15]
+                    "skills": ["python", "java", "c++", "git", "oop", "algorithms", "go", "js", "react", "frontend", "backend", "apis"],
+                    "weight": [0.15, 0.15, 0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05, 0.05, 0.03, 0.02]
                 },
                 "Cloud Engineer": {
-                    "skills": ["aws", "azure", "gcp", "python", "docker", "kubernetes"],
-                    "weight": [0.2, 0.2, 0.2, 0.15, 0.15, 0.1]
+                    "skills": ["aws", "azure", "gcp", "python", "containers", "kubernetes", "devops"],
+                    "weight": [0.2, 0.2, 0.15, 0.15, 0.1, 0.1, 0.1]
                 },
                 "Data Engineer": {
-                    "skills": ["python", "sql", "spark", "hadoop", "etl", "airflow"],
-                    "weight": [0.2, 0.2, 0.2, 0.15, 0.15, 0.1]
+                    "skills": ["python", "sql", "spark", "hadoop", "etl", "airflow", "databases"],
+                    "weight": [0.2, 0.2, 0.15, 0.15, 0.12, 0.1, 0.08]
                 }
             }
 
@@ -188,6 +236,7 @@ if st.button("Get Career Recommendations", key="get_recommend_1"):
                 "aws": "https://aws.amazon.com/training/",
                 "azure": "https://learn.microsoft.com/en-us/training/azure/",
                 "gcp": "https://cloud.google.com/training",
+                "containers": "https://www.docker.com/101-tutorial",
                 "docker": "https://www.docker.com/101-tutorial",
                 "kubernetes": "https://kubernetes.io/docs/tutorials/",
                 "spark": "https://spark.apache.org/docs/latest/",
@@ -202,7 +251,15 @@ if st.button("Get Career Recommendations", key="get_recommend_1"):
                 "statistics": "https://www.coursera.org/learn/statistics",
                 "data visualization": "https://www.coursera.org/learn/data-visualization",
                 "math": "https://www.coursera.org/learn/mathematics-machine-learning",
-                "mlops": "https://www.coursera.org/specializations/machine-learning-engineering-for-production-mlops"
+                "mlops": "https://www.coursera.org/specializations/machine-learning-engineering-for-production-mlops",
+                "go": "https://go.dev/learn/",
+                "js": "https://www.coursera.org/learn/javascript",
+                "react": "https://react.dev/learn",
+                "frontend": "https://www.coursera.org/learn/front-end-web-development",
+                "backend": "https://www.coursera.org/learn/backend-development",
+                "apis": "https://www.coursera.org/learn/api-development",
+                "devops": "https://www.coursera.org/learn/devops-culture-and-mindset",
+                "databases": "https://www.coursera.org/learn/database-management"
             }
 
             # -----------------------
