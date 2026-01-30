@@ -1,5 +1,7 @@
 # TechCareer Analyzer 🎯
 
+🌐 **[LIVE DEMO →](https://techcareer-analyzer-jrk9ux9xupghqbvtqrp6ar.streamlit.app/)**
+
 A data-driven career analysis tool helping tech professionals identify 
 best-fit career paths based on their skillset.
 
